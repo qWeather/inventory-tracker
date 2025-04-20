@@ -1,8 +1,9 @@
 from unittest import TestCase, main, mock
 from inventory.core import (
     INVENTORY, INVENTORY_HISTORY,
-    add_item, remove_item, summary, get_int
+    add_item, remove_item, summary
 )
+from inventory.lib.utilities import get_int
 
 class TestInventory(TestCase):
     def setUp(self):
@@ -24,7 +25,7 @@ class TestInventory(TestCase):
         }
         self.assertDictEqual(INVENTORY, expected_inventory)
 
-    @mock.patch.dict('inventory.INVENTORY', {'apples': 20}, clear=True)
+    @mock.patch.dict('inventory.core.INVENTORY', {'apples': 20}, clear=True)
     def test_add_to_item_qty(self):
         add_item(name='apples', qty=4)
         self.assertEqual(INVENTORY['apples'], 24)
