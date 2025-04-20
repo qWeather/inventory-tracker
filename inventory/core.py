@@ -1,16 +1,11 @@
 import json
+import csv
 from pathlib import Path
+from .lib.utilities import RED, GREEN, YELLOW, RESET
 
 INVENTORY = dict()
 INVENTORY_HISTORY = set()
 INVENTORY_FILE = Path(__file__).resolve().parent.parent / 'inventory_current.json'
-
-# ASCII Colours
-GREEN = '\033[92m' # Success
-RED = '\033[91m' # Errors
-YELLOW = '\033[93m' # Warnings or info
-CYAN = '\033[96m' # Neutral/system
-RESET = '\033[0m'
 
 def load_inventory(file: str=INVENTORY_FILE) -> None:
     try:
@@ -81,16 +76,13 @@ def remove_item(name: str, qty: int) -> None:
     elif qty > INVENTORY[name]:
         print(f'{RED}Not enough items to remove!{RESET}')
 
-def get_string(prompt: str) -> str:
-    while True:
-        try:
-            return input(prompt).strip(' ').lower()
-        except Exception as err:
-            print(f'{err}')
-
-def get_int(prompt: str) -> int:
-    while True:
-        try:
-            return int(input(prompt).strip(' '))
-        except Exception as err:
-            print(f'{RED}{err}. Invalid number. Please try again.{RESET}')
+def export_csv(inventory: dict = INVENTORY, filename: str = 'inventory_current.csv') -> None:
+    try:
+        with open(filename, 'w', newline='') as csv_file:
+            dict_writer = csv.DictWriter(csv_file, fieldnames=['item', 'quantity'])
+            dict_writer.writeheader()
+            for item, qty in inventory.items():
+                dict_writer.writerow({'item': item, 'quantity': qty})
+            print(f'{GREEN} Successfully exported to CSV as {filename}')
+    except PermissionError as err:
+        print(f"{RED}{err}. You don't have access to write to {filename}{RESET}")

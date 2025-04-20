@@ -1,9 +1,9 @@
 from .core import (
     load_inventory, view_inventory, view_history_inventory,
-    add_item, remove_item, save_inventory, summary, get_int,
-    get_string, clear_inventory,
-    YELLOW, CYAN, RESET
+    add_item, remove_item, save_inventory, summary,
+    clear_inventory, export_csv
 )
+from .lib.utilities import CYAN, YELLOW, RESET, get_int, get_string
 import sys
 import argparse
 
@@ -25,7 +25,8 @@ def menu() -> None:
             4. View all previously stocked items
             5. Clear all items in inventory
             6. Summary
-            7. Exit
+            7. Export current inventory to csv
+            8. Exit
         {RESET}''')
         choice = get_string(f'{CYAN}Choose an option: {RESET}')
 
@@ -53,6 +54,8 @@ def menu() -> None:
         elif choice == '6':
             summary()
         elif choice == '7':
+            export_csv()
+        elif choice == '8':
             confirm = get_string(f'{YELLOW}Are you sure you want to exit? (y/n){RESET}')
             if confirm == 'y':
                 save_inventory()
