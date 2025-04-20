@@ -1,6 +1,11 @@
 # Bytecode and caches
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
 
 # Python virtual environments (if any)
 venv/

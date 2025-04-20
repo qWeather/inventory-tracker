@@ -1,2 +1,5 @@
 [console_scripts]
-inventory = inventory.main:main
+inventory-tracker = inventory.main:main
+
+[gui_scripts]
+inventory-tracker = inventory.main:main

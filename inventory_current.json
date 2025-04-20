@@ -1,7 +1,12 @@
 {
   "inventory": {
     "apples": 12,
-    "pears": 10
+    "pears": 10,
+    "plums": 10,
+    "strawberries": 10
   },
-  "inventory_history": []
+  "inventory_history": [
+    "plums",
+    "strawberries"
+  ]
 }

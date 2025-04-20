@@ -1,5 +1,6 @@
 from tkinter import *
 from  tkinter import ttk
+from tkinter import messagebox
 from inventory.core import (
     view_history_inventory, view_inventory, add_item, remove_item,
     summary, export_csv, clear_inventory
@@ -7,18 +8,15 @@ from inventory.core import (
 from inventory.lib.utilities import get_string, get_int
 
 root = Tk()
-
 style = ttk.Style()
-try:
-    style.theme_use("clam")
-except TclError:
-    pass
+
 
 class InventoryTrackerApp(Frame):
     def __init__(self, master=None):
         super().__init__(master)
         root.title("Inventory Tracker")
         root.minsize(width=500, height=400)
+        root.columnconfigure(0, weight=1)
         window_width = 500
         window_height = 400
         screen_width = root.winfo_screenwidth()
@@ -30,20 +28,10 @@ class InventoryTrackerApp(Frame):
 
         frame = ttk.Frame(padding=10)
         frame.grid()
-        self.grid_with_padding(ttk.Label(frame, text="Welcome to Inventory Tracker"), row=0, columnspan=3)
-        ttk.Button(frame, text="Add Item", command=self.add_item_frame).grid(column=0, row=1)
-        ttk.Button(frame, text="Remove Item", command=self.remove_item_frame).grid(column=1, row=1)
-        ttk.Button(frame, text="Clear all items in inventory", command=self.clear_inventory_frame).grid(column=2, row=1)
-        ttk.Button(frame, text="View Inventory", command=self.view_inventory_frame).grid(column=0, row=2)
-        ttk.Button(frame, text="View all previously stocked items", command=self.view_inventory_history_frame).grid(column=1, row=2)
-        ttk.Button(frame, text="Summary", command=self.summary_frame).grid(column=2, row=2)
-        ttk.Button(frame, text="Export current inventory to csv", command=self.export_to_csv_frame).grid(row=3, columnspan=3)
-        ttk.Button(frame, text="Exit", command=root.destroy).grid(row=4, columnspan=3)
-
-    def grid_with_padding(self, widget, **grid_options):
-        grid_options.setdefault('padx', 5)
-        grid_options.setdefault('pady', 5)
-        widget.grid(**grid_options)
+        frame.columnconfigure(0, weight=1)
+        self.init_style(frame)
+        self.grid_with_padding(ttk.Label(frame, text="Welcome to Inventory Tracker"), row=1, columnspan=3)
+        self.menu_buttons_view(frame)
 
     def init_frame(self):
         if self.active_frame:
@@ -52,16 +40,72 @@ class InventoryTrackerApp(Frame):
         self.active_frame.grid()
         return self.active_frame
 
+    def init_style(self, frame):
+        style.configure('Bold.TLabel', font=('Segoe UI', 10, 'bold'))
+        self.grid_with_padding(ttk.Label(frame, text="Choose Theme:"), column=0, row=0)
+        style_var = StringVar()
+        style_choose = ttk.Combobox(frame, textvariable=style_var, state="readonly")
+        style_choose['values'] = ('default', 'vista','clam', 'alt')
+        style_choose.current(0)
+        self.grid_with_padding(style_choose, column=1, row=0)
+
+        def change_theme(event):
+            selected = style_var.get()
+            try:
+                style.theme_use(selected)
+            except TclError:
+                messagebox.showerror("Error", f"Theme '{selected}' not supported.")
+        style_choose.bind("<<ComboboxSelected>>", change_theme)
+
+    def grid_with_padding(self, widget, **grid_options):
+        grid_options.setdefault('padx', 5)
+        grid_options.setdefault('pady', 5)
+        widget.grid(**grid_options)
+
+    def btn_grid_with_padding(self, widget, **grid_options):
+        grid_options.setdefault('padx', 5)
+        grid_options.setdefault('pady', 5)
+        grid_options.setdefault('sticky', "ew")
+        widget.grid(**grid_options)
+
+    def menu_buttons_view(self, frame):
+        buttons_frame_1 = ttk.Frame(frame)
+        buttons_frame_1.grid(column=0, row=2, columnspan=3, sticky="ew")
+        for i in range(3):
+            buttons_frame_1.columnconfigure(i, weight=1)
+        self.btn_grid_with_padding(ttk.Button(buttons_frame_1, text="Add Item", command=self.add_item_frame), column=0, row=0)
+        self.btn_grid_with_padding(ttk.Button(buttons_frame_1, text="Remove Item", command=self.remove_item_frame), column=1, row=0)
+        self.btn_grid_with_padding(ttk.Button(buttons_frame_1, text="Clear Inventory", command=self.clear_inventory_frame), column=2, row=0)
+        
+        buttons_frame_2 = ttk.Frame(frame)
+        buttons_frame_2.grid(column=0, row=3, columnspan=3, sticky="ew")
+        for i in range(3):
+            buttons_frame_2.columnconfigure(i, weight=1)
+        self.btn_grid_with_padding(ttk.Button(buttons_frame_2, text="View Inventory", command=self.view_inventory_frame), column=0, row=1)
+        self.btn_grid_with_padding(ttk.Button(buttons_frame_2, text="View all previously stocked items", command=self.view_inventory_history_frame), column=1, row=1)
+        self.btn_grid_with_padding(ttk.Button(buttons_frame_2, text="Summary", command=self.summary_frame), column=2, row=1)
+
+        buttons_frame_3 = ttk.Frame(frame)
+        buttons_frame_3.grid(column=0, row=4, columnspan=3)
+        buttons_frame_3.columnconfigure(1, weight=1)
+        self.btn_grid_with_padding(ttk.Button(buttons_frame_3, text="Export current inventory to csv", command=self.export_to_csv_frame), column=0, row=4)
+
+        buttons_frame_4 = ttk.Frame(frame)
+        buttons_frame_4.grid(column=0, row=5, columnspan=3)
+        buttons_frame_4.columnconfigure(1, weight=1)
+        self.btn_grid_with_padding(ttk.Button(buttons_frame_4, text="Exit", command=root.destroy), column=0, row=5)
+
     def summary_frame(self):
         frame = self.init_frame()
         if summary() is None:
             self.grid_with_padding(ttk.Label(frame, text=f"No items in stock!"), row=0)
         else:
             total_in_stock, unique_items, most_in_stock, least_in_stock = summary()
-            self.grid_with_padding(ttk.Label(frame, text=f"Total number of items in stock: {total_in_stock}"), column= 0, row=0)
-            self.grid_with_padding(ttk.Label(frame, text=f"Total unique item types: {unique_items}"), column=0, row=1)
-            self.grid_with_padding(ttk.Label(frame, text=f"Most stocked item: {most_in_stock}"), column=0, row=2)
-            self.grid_with_padding(ttk.Label(frame, text=f"Least stocked item: {least_in_stock}"), column=0, row=3)
+            style.configure('Bold.TLabel', font=('TkDefaultFont', 10, 'bold'))
+            self.grid_with_padding(ttk.Label(frame, text=f"Total number of items in stock: {total_in_stock}", style='Bold.TLabel'), column= 0, row=0)
+            self.grid_with_padding(ttk.Label(frame, text=f"Total unique item types: {unique_items}", style='Bold.TLabel'), column=0, row=1)
+            self.grid_with_padding(ttk.Label(frame, text=f"Most stocked item: {most_in_stock}", style='Bold.TLabel'), column=0, row=2)
+            self.grid_with_padding(ttk.Label(frame, text=f"Least stocked item: {least_in_stock}", style='Bold.TLabel'), column=0, row=3)
 
     def view_inventory_frame(self):
         frame = self.init_frame()
@@ -86,14 +130,12 @@ class InventoryTrackerApp(Frame):
                 ttk.Label(frame, text=f"{item}").grid(row=i+1)
 
     def clear_inventory_frame(self):
-        frame = self.init_frame()
         clear_inventory()
-        ttk.Label(frame, text="Inventory is now empty!").grid(row=0)
+        messagebox.showinfo("Info", "Inventory is now empty!")
 
     def export_to_csv_frame(self):
-        frame = self.init_frame()
         export_msg = export_csv()
-        ttk.Label(frame, text=export_msg).grid(row=0)
+        messagebox.showifo("Success", export_msg)
 
     def add_item_frame(self):
         frame = self.init_frame()
@@ -109,10 +151,14 @@ class InventoryTrackerApp(Frame):
         item_qty.grid(column= 1, row=1)
 
         def on_add():
-            command = add_item(name=get_string(item_name.get()), qty=get_int(item_qty.get()))
-            ttk.Label(form, text=f'{command}').grid(row=3, columnspan=2)
+            if item_name.get() != "" and item_qty.get() != "" and not item_qty.get().__contains__('-') and item_qty.get() != '0':
+                command = add_item(name=get_string(item_name.get()), qty=get_int(item_qty.get()))
+                messagebox.showinfo("Info", command)
+                self.view_inventory_frame()
+            else:
+                messagebox.showerror("Invalid input", "Item name and quantity are required. \nQuantity must be a positive number.")
 
-        ttk.Button(form, text='Add', command=on_add).grid(row=2, columnspan=2)
+        self.btn_grid_with_padding(ttk.Button(form, text='Add', command=on_add), row=2, columnspan=2)
 
     def remove_item_frame(self):
         frame = self.init_frame()
@@ -128,7 +174,11 @@ class InventoryTrackerApp(Frame):
         item_qty.grid(column= 1, row=1)
 
         def on_remove():
-            command = remove_item(name=get_string(item_name.get()), qty=get_int(item_qty.get()))
-            ttk.Label(form, text=f'{command}').grid(row=3, columnspan=2)
+            if item_name.get() != "" and item_qty.get() != "" and not item_qty.get().__contains__('-') and item_qty.get() != '0':
+                command = remove_item(name=get_string(item_name.get()), qty=get_int(item_qty.get()))
+                messagebox.showinfo("Info", command)
+                self.view_inventory_frame()
+            else:
+                messagebox.showerror("Invalid input", "Item name and quantity are required. \nQuantity must be a positive number. \nItem must be in inventory!")
 
-        ttk.Button(form, text='Remove', command=on_remove).grid(row=2, columnspan=2)
+        self.btn_grid_with_padding(ttk.Button(form, text='Remove', command=on_remove), row=2, columnspan=2)

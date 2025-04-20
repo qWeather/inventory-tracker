@@ -1,16 +1,19 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='inventory-tracker',
-    version='0.1.0',
-    author='Beatrice M. Antoniu',
-    description='A CLI tool to track and manage inventory with persistent storage.',
+    name="inventory-tracker",
+    version="0.1.1",
+    description="A simple GUI-based inventory tracker in Python.",
+    author="Beatrice M. Antoniu",
     packages=find_packages(),
     include_package_data=True,
     entry_points={
-        'console_scripts': [
-            'inventory=inventory.main:main',
-        ],   
+        "gui_scripts": [
+            "inventory-tracker = inventory.main:main"
+        ],
+        "console_scripts": [
+            "inventory-tracker = inventory.main:main"
+        ]
     },
     classifiers=[
         'Programming Language :: Python 3.11',
