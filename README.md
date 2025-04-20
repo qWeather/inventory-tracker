@@ -1,62 +1,86 @@
 # Inventory Tracker
 
-A command-line tool for managing inventory: add, remove, view stock, and track historical items. Inventory data is saved between sessions using a JSON file.
+A Python GUI app for managing inventory: add, remove, view stock, track historical items, and export data.  
+Inventory data is saved between sessions using a JSON file.
 
-## Installation
-
-Clone the repo, then install it locally:
-```
-pip install -e .
-```
 ---
 
 ## Getting Started
-1. Make sure you have Python 3.11 installed.
-2. Run the following command in your terminal:
 
+1. **Install Python 3.**  
+2. **Clone this repository:**
+   ```
+   git clone https://github.com/qWeather/inventory-tracker.git
+   cd inventory-tracker
+   ```
+## Install dependencies (optional, if using virtualvenv):
+```
+pip install -r requirements.txt
+```
+
+## Run the app:
 ```
 inventory
 ```
 
----
-
-## Command-Line Usage
-
-You can also run the script with optional flags:
-- `--summary` -> Show inventory summary and exit
-- `--view` -> View current inventory and exit
-- `--clear` -> Clear inventory and exit
-
-### Examples:
-
-```
-inventory --summary
-inventory --view
-inventory --clear
-```
-
 ## Features
-
 - Add and remove items with quantity tracking
-- View current stock (sorted alphabetically)
-- View all previously stocked item names
-- Get a summary of item stats (total, unique, most/least stocked)
-- Data is saved between runs using a JSON file
-- Input is validated and prompts retry on invalid input
-- Colored terminal messages for better UX
----
+- View current inventory and inventory history
+- Get summary statistics
+- Export current inventory to CSV
+- Data persistence via JSON file
+- Clean, user-friendly Tkinter GUI
+
+Project Structure
+```
+inventory-tracker/
+
+	inventory/              # Core package
+		__init__.py
+		core.py             # Business logic
+		main.py				# Entry point
+		ui/gui.py           # Tkinter GUI
+		lib/utilities.py    # Helpers and formatting
+	tests/                  # Unit tests
+		__init__.py
+		test_core.py
+	inventory_current.json  # Saved data
+	inventory_current.csv   # Optional export
+	README.md
+	setup.py
+	.pre-commit-config.yaml
+```
+
+## Testing
+This project uses **unittest** for test coverage.
+To run tests:
+```
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+## Pre-commit Hook (Optional but Recommended)
+Use pre-commit to automatically run tests before each commit.
+Setup:
+1. Install:
+```
+pip install pre-commit
+```
+2. Install hooks:
+```
+pre-commit install
+```
+Now every time you commit, unit tests will automatically run.
+If any test fails, the commit will be blocked.
+
 ## Planned Features
+- CSV import
+- Dark/light theme toggle for GUI
+- Search inventory items
+- Undo last action
+- More robust error feedback in the GUI
 
-- Add unit tests
-- Add CSV import/export
-- Build a simple GUI on top of the logic
-- Add categories or item types
----
-## Project Structure
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-- `main.py` - menu and program runner
-- `inventory.py` - inventory functions and file handling
-- `inventory_current.json` - data file for saved inventory
----
 ## Author
 Created by Beatrice M. Antoniu
