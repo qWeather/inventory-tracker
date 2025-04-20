@@ -1,9 +1,11 @@
 LICENSE.txt
+MANIFEST.in
 README.md
 setup.py
 inventory/__init__.py
 inventory/core.py
 inventory/main.py
+inventory/data/inventory_current.json
 inventory/lib/__init__.py
 inventory/lib/utilities.py
 inventory/ui/__init__.py

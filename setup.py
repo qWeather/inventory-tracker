@@ -7,6 +7,9 @@ setup(
     author="Beatrice M. Antoniu",
     packages=find_packages(),
     include_package_data=True,
+    package_data={
+        "inventory": ["data/*.json"],
+    },
     entry_points={
         "gui_scripts": [
             "inventory-tracker = inventory.main:main"

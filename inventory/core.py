@@ -1,11 +1,11 @@
 import json
 import csv
 from typing import Optional
-from pathlib import Path
+from importlib.resources import files
 
 INVENTORY = dict()
 INVENTORY_HISTORY = set()
-INVENTORY_FILE = Path(__file__).resolve().parent.parent / 'inventory_current.json'
+INVENTORY_FILE = files("inventory.data").joinpath("inventory_current.json")
 
 def load_inventory(file: str=INVENTORY_FILE) -> str | FileNotFoundError:
     try:
@@ -19,7 +19,7 @@ def load_inventory(file: str=INVENTORY_FILE) -> str | FileNotFoundError:
 
 def save_inventory(file: str=INVENTORY_FILE) -> str | PermissionError:
     try:
-        with open(file, 'w') as file_open:
+        with INVENTORY_FILE.open("w") as file_open:
             json.dump({'inventory': INVENTORY, 'inventory_history': list(INVENTORY_HISTORY)}, file_open, indent=2)
             return f'Successfully saved inventory to {file}'
     except PermissionError as err:
