@@ -1,0 +1,11 @@
+README.md
+setup.py
+inventory/__init__.py
+inventory/core.py
+inventory/main.py
+inventory_tracker.egg-info/PKG-INFO
+inventory_tracker.egg-info/SOURCES.txt
+inventory_tracker.egg-info/dependency_links.txt
+inventory_tracker.egg-info/entry_points.txt
+inventory_tracker.egg-info/top_level.txt
+tests/test_inventory.py
