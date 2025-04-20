@@ -47,27 +47,21 @@ class TestInventory(TestCase):
         self.assertEqual(INVENTORY['pears'], 20)
 
     @mock.patch.dict('inventory.core.INVENTORY', {'apples': 23, 'bananas': 30, 'pears': 32, 'berries': 12, 'oranges': 14}, clear=True)
-    @mock.patch('builtins.print')
-    def test_summary(self, mock_print):
-        summary()
-        self.assertEqual(mock_print.call_args_list[0][0][0], 'Total number of items in stock: 111')
-        self.assertEqual(mock_print.call_args_list[1][0][0], 'Total unique item types: 5')
-        self.assertEqual(mock_print.call_args_list[2][0][0], 'Most stocked item: pears')
-        self.assertEqual(mock_print.call_args_list[3][0][0], 'Least stocked item: berries')
-        self.assertEqual(mock_print.call_count, 4)
+    def test_summary(self):
+        self.assertEqual(summary(), (111, 5, 'pears', 'berries'))
 
-    @mock.patch('builtins.input')
-    def test_get_int_valid(self, mock_input):
-        mock_input.return_value = '2'
-        result = get_int('How many of this item: ')
-        self.assertIsInstance(result, int)
-        self.assertEqual(result, 2)
+    def test_get_int_valid(self):
+        self.assertIsInstance(get_int('2'), int)
+        self.assertEqual(get_int('2'), 2)
+        self.assertIsInstance(get_int('23 '), int)
+        self.assertEqual(get_int('23 '), 23)
 
-    @mock.patch('builtins.input')
-    def test_get_int_invalid(self, mock_input):
-        mock_input.side_effect = ['abc', '5']
-        result = get_int('How many of this item: ')
-        self.assertEqual(result, 5)
+    def test_get_int_invalid(self):
+        with self.assertRaises(Exception):
+            get_int('abc')
+            get_int('abc ')
+            get_int('DEF')
+            get_int('DEF ')
 
 if __name__ == '__main__':
     main()

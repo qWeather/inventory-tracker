@@ -3,6 +3,6 @@ repos:
     hooks:
       - id: run-unittests
         name: Run Unittests
-        entry: python -m unittest discover
+        entry: python -m unittest discover -s tests -p "test_*.py"
         language: system
         types: [python]
