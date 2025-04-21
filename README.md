@@ -7,7 +7,7 @@ Inventory data is saved between sessions using a JSON file.
 
 ## Getting Started
 
-1. **Install Python 3.**  
+1. **Install Python 3.11**  
 2. **Clone this repository:**
    ```
    git clone https://github.com/qWeather/inventory-tracker.git
